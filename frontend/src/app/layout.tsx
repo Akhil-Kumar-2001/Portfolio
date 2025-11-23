@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Akhil Kumar S | MERN Stack Developer",
   description: "Premium developer portfolio of Akhil Kumar S, a MERN Stack Developer and Problem Solver.",
+  icons: {
+    icon: "/fav.png",
+    shortcut: "/fav.png",
+    apple: "/fav.png",
+  },
 };
 
 export default function RootLayout({
