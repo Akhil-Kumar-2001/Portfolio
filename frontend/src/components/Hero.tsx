@@ -3,13 +3,23 @@
 import { motion, useInView } from 'framer-motion';
 import Cube from './3d/Cube';
 import { useState, useEffect, useRef } from 'react';
-import { Github, Linkedin, Instagram } from 'lucide-react';
+import { Github, Linkedin, Instagram, ChevronDown } from 'lucide-react';
 
 const roles = ["MERN Stack Developer", "Backend Engineer", "Problem Solver"];
 
 export default function Hero() {
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.1, margin: "400px 0px" });
+  const [scrollOpacity, setScrollOpacity] = useState(1);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const newOpacity = Math.max(0, 1 - window.scrollY / 100);
+      setScrollOpacity(newOpacity);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     // CHANGED: min-h-[85vh] -> min-h-[90vh]
@@ -94,6 +104,21 @@ export default function Hero() {
               <a href="#contact" className="px-6 py-3 md:px-8 border border-dark-silver text-metallic-silver hover:border-white hover:text-white transition-all duration-300 uppercase tracking-wider text-xs md:text-sm font-bold whitespace-nowrap">
                 Contact Me
               </a>
+            </motion.div>
+
+            {/* NEW: Content Filler - Quote Block */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2.0 }}
+              className="mt-12 border-l-2 border-electric-blue pl-4 py-2"
+            >
+               <p className="text-dark-silver italic text-sm md:text-base max-w-[300px]">
+                 "It's not who I am underneath, but what I do that defines me."
+               </p>
+               <p className="text-xs text-metallic-silver mt-1 uppercase tracking-wider">
+                 — Batman
+               </p>
             </motion.div>
           </div>
         </div>
