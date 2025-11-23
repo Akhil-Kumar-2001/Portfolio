@@ -24,7 +24,7 @@ export default function Hero() {
   return (
     // CHANGED: min-h-[85vh] -> min-h-[90vh]
     // Adds slightly more height back to the mobile view (~5mm visual space)
-    <section ref={ref} className="relative w-full min-h-[90vh] md:h-screen flex items-center justify-center overflow-hidden bg-gloss-black">
+    <section ref={ref} className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-gloss-black">
       {/* Background Gradients */}
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black via-gray-900 to-black opacity-80 z-0" />
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-electric-blue/10 rounded-full blur-[100px]" />
