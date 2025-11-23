@@ -89,8 +89,8 @@ export default function Cube() {
 
   return (
     <div className="w-full h-full absolute inset-0 z-0">
-      {/* Increased DPR for mobile clarity, using adaptive range */}
-      <Canvas dpr={[1.5, 2]}>
+      {/* Optimized DPR for mobile performance - Lower cap prevents stuttering */}
+      <Canvas dpr={[1, 1.5]}>
         <PerspectiveCamera makeDefault position={[0, 0, 8]} />
         <ambientLight intensity={0.2} />
         
@@ -106,21 +106,29 @@ export default function Cube() {
           <IrregularRubiksCube isMobile={isMobile} />
         </Float>
         
-        {/* Post-processing for Glow - Optimized resolution for mobile performance */}
-        <EffectComposer enableNormalPass={false} multisampling={0} resolutionScale={isMobile ? 0.5 : 1}>
-          <Bloom 
-            luminanceThreshold={0.5} 
-            mipmapBlur 
-            intensity={1.5} 
-            radius={0.4}
-          />
-        </EffectComposer>
+        {/* Post-processing for Glow - Disabled on mobile for performance */}
+        {!isMobile && (
+          <EffectComposer enableNormalPass={false} multisampling={0}>
+            <Bloom 
+              luminanceThreshold={0.5} 
+              mipmapBlur 
+              intensity={1.5} 
+              radius={0.4}
+            />
+          </EffectComposer>
+        )}
         
+        {/* 
+           CRITICAL FIX: 
+           - enabled={!isMobile}: COMPLETELY DISABLES controls on mobile. 
+           - This ensures the canvas acts like a static image/video and doesn't block scrolling.
+        */}
         <OrbitControls 
           enableZoom={false} 
           enablePan={false} 
           autoRotate={false} 
-          enableRotate={!isMobile} // Disable rotation on mobile to fix scroll sticking
+          enableRotate={!isMobile}
+          enabled={!isMobile} 
         />
       </Canvas>
     </div>

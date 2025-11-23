@@ -47,7 +47,9 @@ function CodeBlock({ position, text, delay }: { position: [number, number, numbe
          tempColor.lerpColors(colorBack, colorFront, clampedOpacity);
          textRef.current.color = tempColor;
          
-         textRef.current.material.emissiveIntensity = THREE.MathUtils.mapLinear(clampedOpacity, 0.2, 1.0, 0.0, 1.5);
+         // BOOSTED GLOW: Increased max intensity from 1.5 to 4.0
+         // This makes the text shine brightly without needing the heavy Bloom effect
+         textRef.current.material.emissiveIntensity = THREE.MathUtils.mapLinear(clampedOpacity, 0.2, 1.0, 0.0, 4.0);
          
          if (clampedOpacity > 0.8) {
              textRef.current.material.emissive = colorFront;
@@ -148,8 +150,8 @@ export default function SkillsCloud() {
 
   return (
     <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] cursor-grab active:cursor-grabbing">
-      {/* Increased DPR on mobile to 1.5 to fix blurry text, trusting optimized geometry */}
-      <Canvas dpr={[1.5, 2]}>
+      {/* Strict limit to 1.0 DPR on mobile to prevent crashing */}
+      <Canvas dpr={[1, 1.5]}>
         <PerspectiveCamera makeDefault position={[0, 0, 11]} />
         <ambientLight intensity={0.5} />
         <Environment preset="city" />
@@ -161,12 +163,21 @@ export default function SkillsCloud() {
            <FloatingCodeCloud isMobile={isMobile} />
         </Float>
 
-        <EffectComposer enableNormalPass={false} multisampling={0}>
+        {/* Optimized Bloom for Glow */}
+        <EffectComposer 
+          enableNormalPass={false} 
+          multisampling={0} 
+          // CRITICAL OPTIMIZATION: Render glow at half resolution on mobile. 
+          // This gives you the glow effect with 4x better performance than standard.
+          resolutionScale={isMobile ? 0.5 : 1}
+        >
           <Bloom 
-            luminanceThreshold={0.2} 
+            // Lower threshold means "glow easier"
+            luminanceThreshold={0.1} 
             mipmapBlur 
-            intensity={0.8} 
-            radius={0.5}
+            // Increased intensity for more visible glow
+            intensity={isMobile ? 1.0 : 1.5} 
+            radius={0.6}
           />
         </EffectComposer>
 

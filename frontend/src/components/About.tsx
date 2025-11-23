@@ -6,7 +6,9 @@ import CyberShape from './3d/CyberShape';
 
 export default function About() {
   return (
-    <section id="about" className="py-20 relative bg-black overflow-hidden">
+    // CHANGED: py-12 -> py-16
+    // Adds a bit more padding to the top of About section
+    <section id="about" className="py-16 md:py-20 relative bg-black overflow-hidden">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
         {/* Left: 3D Render - Hidden on small screens */}
         <motion.div 

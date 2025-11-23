@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
 import SkillsCloud from './3d/SkillsCloud';
 import { useRef } from 'react';
 
@@ -13,8 +13,11 @@ const allSkills = [
 ];
 
 export default function Skills() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { amount: 0.1, margin: "100px" }); // Preload slightly
+
   return (
-    <section id="skills" className="py-20 bg-black relative overflow-hidden">
+    <section id="skills" ref={ref} className="py-20 bg-black relative overflow-hidden">
        {/* Background glow */}
        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-electric-blue/5 rounded-full blur-[120px]" />
 
@@ -51,7 +54,8 @@ export default function Skills() {
 
            {/* 3D Cloud - Right Side */}
            <div className="w-full md:w-2/3 h-[500px] order-1 md:order-2 flex items-center justify-center translate-x-0 md:translate-x-8">
-              <SkillsCloud />
+              {/* Only render when visible to prevent mobile stutter */}
+              {isInView && <SkillsCloud />}
            </div>
         </div>
       </div>
