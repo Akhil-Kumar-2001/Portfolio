@@ -138,7 +138,7 @@ function FloatingCodeCloud({ isMobile }: { isMobile: boolean }) {
   );
 }
 
-export default function SkillsCloud() {
+export default function SkillsCloud({ isInView = true }: { isInView?: boolean }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -151,7 +151,7 @@ export default function SkillsCloud() {
   return (
     <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] cursor-grab active:cursor-grabbing">
       {/* Strict limit to 1.0 DPR on mobile to prevent crashing */}
-      <Canvas dpr={[1, 1.5]}>
+      <Canvas dpr={[1, 1.5]} frameloop={isInView ? "always" : "never"}>
         <PerspectiveCamera makeDefault position={[0, 0, 11]} />
         <ambientLight intensity={0.5} />
         <Environment preset="city" />

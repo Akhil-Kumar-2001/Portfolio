@@ -9,7 +9,7 @@ const roles = ["MERN Stack Developer", "Backend Engineer", "Problem Solver"];
 
 export default function Hero() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.1 });
+  const isInView = useInView(ref, { amount: 0.1, margin: "400px 0px" });
 
   return (
     // CHANGED: min-h-[85vh] -> min-h-[90vh]
@@ -30,7 +30,8 @@ export default function Hero() {
         */}
         <div className="absolute right-0 top-0 w-full h-full md:w-1/2 md:right-12 flex items-center justify-center pointer-events-none md:pointer-events-auto">
              <div className="w-full h-full"> 
-                {isInView && <Cube />}
+                {/* Always render, but pass the visibility state down */}
+                <Cube isInView={isInView} />
              </div>
         </div>
       </div>

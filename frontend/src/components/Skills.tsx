@@ -14,7 +14,7 @@ const allSkills = [
 
 export default function Skills() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.1, margin: "100px" }); // Preload slightly
+  const isInView = useInView(ref, { amount: 0.1, margin: "600px 0px" }); // Preload heavily
 
   return (
     <section id="skills" ref={ref} className="py-20 bg-black relative overflow-hidden">
@@ -54,8 +54,8 @@ export default function Skills() {
 
            {/* 3D Cloud - Right Side */}
            <div className="w-full md:w-2/3 h-[500px] order-1 md:order-2 flex items-center justify-center translate-x-0 md:translate-x-8">
-              {/* Only render when visible to prevent mobile stutter */}
-              {isInView && <SkillsCloud />}
+              {/* Always render, but pass the visibility state down */}
+              <SkillsCloud isInView={isInView} />
            </div>
         </div>
       </div>

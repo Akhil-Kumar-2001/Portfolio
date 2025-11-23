@@ -77,7 +77,7 @@ function IrregularRubiksCube({ isMobile }: { isMobile: boolean }) {
   );
 }
 
-export default function Cube() {
+export default function Cube({ isInView = true }: { isInView?: boolean }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ export default function Cube() {
   return (
     <div className="w-full h-full absolute inset-0 z-0">
       {/* Optimized DPR for mobile performance - Lower cap prevents stuttering */}
-      <Canvas dpr={[1, 1.5]}>
+      <Canvas dpr={[1, 1.5]} frameloop={isInView ? "always" : "never"}>
         <PerspectiveCamera makeDefault position={[0, 0, 8]} />
         <ambientLight intensity={0.2} />
         
