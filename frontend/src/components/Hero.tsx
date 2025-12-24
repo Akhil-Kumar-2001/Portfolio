@@ -11,6 +11,7 @@ export default function Hero() {
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.1, margin: "400px 0px" });
   const [scrollOpacity, setScrollOpacity] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +20,13 @@ export default function Hero() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile(); // Initial check
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   return (
@@ -30,21 +38,23 @@ export default function Hero() {
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-electric-blue/10 rounded-full blur-[100px]" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-purple/10 rounded-full blur-[100px]" />
 
-      {/* 3D Cube Background - Moved back to Right */}
-      <div className="absolute inset-0 z-10 opacity-100 pointer-events-none">
-        {/* 
-           CRITICAL FIX: 
-           - 'pointer-events-none': Touches pass through this div to the body (scrolling works).
-           - 'md:pointer-events-auto': Mouse works on Desktop (spinning works).
-           - Added 'touch-none' to ensure no touch actions are captured by children on mobile.
-        */}
-        <div className="absolute right-0 top-0 w-full h-full md:w-1/2 md:right-12 flex items-center justify-center pointer-events-none md:pointer-events-auto">
-             <div className="w-full h-full"> 
-                {/* Always render, but pass the visibility state down */}
-                <Cube isInView={isInView} />
-             </div>
+      {/* 3D Cube Background - Moved back to Right - Hidden on Mobile */}
+      {!isMobile && (
+        <div className="absolute inset-0 z-10 opacity-100 pointer-events-none">
+          {/* 
+             CRITICAL FIX: 
+             - 'pointer-events-none': Touches pass through this div to the body (scrolling works).
+             - 'md:pointer-events-auto': Mouse works on Desktop (spinning works).
+             - Added 'touch-none' to ensure no touch actions are captured by children on mobile.
+          */}
+          <div className="absolute right-0 top-0 w-full h-full md:w-1/2 md:right-12 flex items-center justify-center pointer-events-none md:pointer-events-auto">
+               <div className="w-full h-full"> 
+                  {/* Always render, but pass the visibility state down */}
+                  <Cube isInView={isInView} />
+               </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Social Links Vertical - Top-Right on Mobile, Bottom-Right on Desktop */}
       <motion.div 
