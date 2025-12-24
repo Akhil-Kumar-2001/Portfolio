@@ -1,9 +1,9 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useMotionValue, PanInfo } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 interface Project {
   title: string;
@@ -41,6 +41,39 @@ const projects: Project[] = [
 ];
 
 export default function Projects() {
+  const [isMobile, setIsMobile] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const x = useMotionValue(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const threshold = 50; // Minimum drag distance to trigger swipe
+    
+    if (Math.abs(info.offset.x) > threshold) {
+      if (info.offset.x < 0 && currentIndex < projects.length - 1) {
+        // Swiped left (negative) = go to next
+        setCurrentIndex(currentIndex + 1);
+      } else if (info.offset.x > 0 && currentIndex > 0) {
+        // Swiped right (positive) = go to previous
+        setCurrentIndex(currentIndex - 1);
+      }
+    }
+    
+    // Reset position
+    x.set(0);
+  };
+
+  // Calculate card width and transform for mobile
+  const cardWidth = typeof window !== 'undefined' && isMobile ? window.innerWidth - 48 : 0;
+  const transform = -currentIndex * (cardWidth + 40); // 40px gap
+
   return (
     <section id="projects" className="py-32 bg-black relative overflow-hidden">
        {/* Background Elements */}
@@ -60,10 +93,51 @@ export default function Projects() {
           <div className="h-1 w-24 bg-electric-blue mx-auto rounded-full shadow-[0_0_10px_rgba(65,105,225,0.6)]" />
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {/* Desktop: Grid Layout */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {projects.map((project, index) => (
             <ProjectCard key={index} project={project} index={index} />
           ))}
+        </div>
+
+        {/* Mobile: Swipeable Carousel */}
+        <div className="md:hidden relative overflow-hidden">
+          <motion.div
+            ref={containerRef}
+            className="flex gap-10 cursor-grab active:cursor-grabbing"
+            style={{ x }}
+            drag="x"
+            dragConstraints={{ 
+              left: isMobile ? -(projects.length - 1) * (cardWidth + 40) : 0, 
+              right: 0 
+            }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
+            animate={{ x: isMobile ? transform : 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            {projects.map((project, index) => (
+              <div key={index} className="flex-shrink-0 w-[calc(100vw-3rem)]">
+                <ProjectCard project={project} index={index} />
+              </div>
+            ))}
+          </motion.div>
+          
+          {/* Swipe Indicators */}
+          <div className="flex justify-center gap-2 mt-8">
+            {projects.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentIndex 
+                    ? 'w-8 bg-electric-blue shadow-[0_0_10px_rgba(65,105,225,0.6)]' 
+                    : 'w-2 bg-white/20 hover:bg-white/40'
+                }`}
+                aria-label={`Go to project ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         <motion.div 
