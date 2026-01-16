@@ -6,13 +6,18 @@ import { OrbitControls, PerspectiveCamera, Float, Environment } from '@react-thr
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 
+// Pre-create geometries and materials to avoid GC stutter in the render loop
+const boxGeometry = new THREE.BoxGeometry(0.95, 0.95, 0.95);
+const edgesGeometry = new THREE.EdgesGeometry(boxGeometry);
+const lineMaterial = new THREE.LineBasicMaterial({ color: "#C0C0C0", opacity: 0.8, transparent: true });
+
 function SubCube({ position, scale }: { position: [number, number, number], scale: number }) {
   return (
     <mesh 
       position={position} 
       scale={[scale, scale, scale]}
     >
-      <boxGeometry args={[0.95, 0.95, 0.95]} />
+      <primitive object={boxGeometry} attach="geometry" />
       <meshStandardMaterial
         color="#000000"
         metalness={1}
@@ -21,8 +26,8 @@ function SubCube({ position, scale }: { position: [number, number, number], scal
         emissiveIntensity={0.2}
       />
       <lineSegments>
-        <edgesGeometry args={[new THREE.BoxGeometry(0.95, 0.95, 0.95)]} />
-        <lineBasicMaterial color="#C0C0C0" linewidth={2} opacity={0.8} transparent />
+        <primitive object={edgesGeometry} attach="geometry" />
+        <primitive object={lineMaterial} attach="material" />
       </lineSegments>
     </mesh>
   );

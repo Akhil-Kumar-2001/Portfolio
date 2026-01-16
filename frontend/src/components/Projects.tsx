@@ -54,19 +54,21 @@ export default function Projects() {
   }, []);
 
   const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const threshold = 50; // Minimum drag distance to trigger swipe
+    const swipeThreshold = 50;
+    const velocityThreshold = 500;
     
-    if (Math.abs(info.offset.x) > threshold) {
-      if (info.offset.x < 0 && currentIndex < projects.length - 1) {
-        // Swiped left (negative) = go to next
+    // Determine if we should change index based on distance OR velocity
+    if (info.offset.x < -swipeThreshold || info.velocity.x < -velocityThreshold) {
+      if (currentIndex < projects.length - 1) {
         setCurrentIndex(currentIndex + 1);
-      } else if (info.offset.x > 0 && currentIndex > 0) {
-        // Swiped right (positive) = go to previous
+      }
+    } else if (info.offset.x > swipeThreshold || info.velocity.x > velocityThreshold) {
+      if (currentIndex > 0) {
         setCurrentIndex(currentIndex - 1);
       }
     }
     
-    // Reset position
+    // Force the motion value back to 0 so the 'animate' prop can take over cleanly
     x.set(0);
   };
 
@@ -84,7 +86,7 @@ export default function Projects() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, margin: "-100px" }}
+          viewport={{ once: true, margin: "-100px" }}
           className="mb-20 text-center"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white tracking-tight">
@@ -163,16 +165,13 @@ export default function Projects() {
 }
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
-  // Removed complex scroll-linked parallax to fix "stuck" scrolling issue.
-  // Reverting to simpler Framer Motion viewport animation.
-  
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group relative flex flex-col h-full bg-[#0a0a0a] border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
+      transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
+      className="group relative flex flex-col h-full bg-[#0a0a0a] border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 hover:shadow-2xl transition-all duration-500"
     >
       {/* Image Area */}
       <div className="relative h-64 overflow-hidden bg-gray-900">

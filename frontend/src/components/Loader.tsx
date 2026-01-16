@@ -44,13 +44,13 @@ export default function Loader({ onLoadingComplete }: { onLoadingComplete: () =>
     let delay = 10; // Base fast speed
     
     if (progress < 40) {
-        delay = 10; // Very fast
+        delay = 8; // Very fast
     } else if (progress < 70) {
-        delay = 30; // Fast
+        delay = 15; // Fast
     } else if (progress < 90) {
-        delay = 60; // Moderate
+        delay = 30; // Moderate
     } else {
-        delay = 150; // Slowing down
+        delay = 60; // Slowing down
     }
     
     // Add slight randomness for realism
@@ -71,7 +71,7 @@ export default function Loader({ onLoadingComplete }: { onLoadingComplete: () =>
     if (progress === 100) {
       setTimeout(() => {
         onLoadingComplete();
-      }, 800);
+      }, 400);
     }
   }, [progress, onLoadingComplete]);
 

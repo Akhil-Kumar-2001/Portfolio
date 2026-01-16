@@ -8,7 +8,7 @@ import * as THREE from 'three';
 
 const allSkills = [
   "JavaScript", "TypeScript", "Express", "Nest.js", "C", "React",
-  "Next.js", "CSS", "HTML", "Bootstrap",
+  "Next.js", "Redis", "Valkey", "CSS", "HTML", "Bootstrap",
   "MongoDB", "SQL", "REST API", "API Integration",
   "Redux", "Zustand", "MVC", "Repo Pattern", "Data Struct",
   "AWS S3", "Docker", "Vercel", "Git", "GitHub", "Figma"
@@ -122,7 +122,7 @@ function FloatingCodeCloud({ isMobile }: { isMobile: boolean }) {
      if(groupRef.current) {
          const scrollOffset = scrollRef.current * 0.001; 
          
-         const rotationSpeed = 0.05;
+         const rotationSpeed = 0.25; // Increased further for more dynamic feel
          groupRef.current.rotation.x = t * rotationSpeed + scrollOffset; 
          groupRef.current.rotation.y = t * rotationSpeed + scrollOffset; 
      }
